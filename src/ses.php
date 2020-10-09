@@ -97,7 +97,7 @@ class SimpleEmailService
     public function createTemplate($template = array())
     {
         $this->_action = 'createTemplate';
-        $this->_method = 'GET';
+        $this->_method = 'POST';
         $this->_refreshDate();
 
         /*if (!preg_match('/^(EmailAddress|Domain|)$/', $identity_type)) {
