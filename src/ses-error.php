@@ -161,6 +161,9 @@ EOT;
         case 'EmailBody':
             $this->description = 'The email Body: is required.';
             break;
+        case 'AlreadyExists':
+            $this->description = 'Template Already Exists.';
+            break;			
         }
     }
 }

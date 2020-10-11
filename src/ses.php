@@ -96,14 +96,10 @@ class SimpleEmailService
 	
     public function createTemplate($template = array())
     {
-        $this->_action = 'createTemplate';
+        $this->_action = 'CreateTemplate';
         $this->_method = 'POST';
         $this->_refreshDate();
 
-        /*if (!preg_match('/^(EmailAddress|Domain|)$/', $identity_type)) {
-            throw new Exception('IdentityType must be EmailAddress or Domain');
-            return;
-        }*/
 		if (empty($template) || empty($template['TemplateName'])) {
 			throw new \Exception('Template Name Cannot Be Empty');
             return;
@@ -111,19 +107,90 @@ class SimpleEmailService
 
         $parameters = array();
         if ($template) {
-            $parameters['Template'] = $template;
+            $parameters['Template.HtmlPart'] = $template['HtmlPart'];
+			$parameters['Template.SubjectPart'] = $template['SubjectPart'];
+			$parameters['Template.TemplateName'] = $template['TemplateName'];
+			$parameters['Template.TextPart'] = $template['TextPart'];
         }
-
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-            /*$members = $res['body']->ListIdentitiesResult->Identities->member;
-            $ret = [];
-            foreach ($members as $member) {
-                $ret[] = (string) $member;
-            }
-            return $ret;*/
-			return json_encode($res['body']);
+			return (string) $res['body']->ResponseMetadata->RequestId;
+        } else {
+            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+        }
+    }
+
+    public function updateTemplate($template = array())
+    {
+        $this->_action = 'UpdateTemplate';
+        $this->_method = 'POST';
+        $this->_refreshDate();
+
+		if (empty($template) || empty($template['TemplateName'])) {
+			throw new \Exception('Template Name Cannot Be Empty');
+            return;
+		}
+
+        $parameters = array();
+        if ($template) {
+            $parameters['Template.HtmlPart'] = $template['HtmlPart'];
+			$parameters['Template.SubjectPart'] = $template['SubjectPart'];
+			$parameters['Template.TemplateName'] = $template['TemplateName'];
+			$parameters['Template.TextPart'] = $template['TextPart'];
+        }
+        $this->_generateSignature($parameters);
+        $res = $this->_request();
+        if ($res['code'] == 200) {
+			return (string) $res['body']->ResponseMetadata->RequestId;
+        } else {
+            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+        }
+    }	
+
+    public function getTemplate($template = array())
+    {
+        $this->_action = 'GetTemplate';
+        $this->_method = 'POST';
+        $this->_refreshDate();
+
+		if (empty($template) || empty($template['TemplateName'])) {
+			throw new \Exception('Template Name Cannot Be Empty');
+            return;
+		}
+
+        $parameters = array();
+        if ($template) {
+			$parameters['TemplateName'] = $template['TemplateName'];
+        }
+        $this->_generateSignature($parameters);
+        $res = $this->_request();
+        if ($res['code'] == 200) {
+			return json_decode(json_encode($res['body']->GetTemplateResult->Template), true);
+        } else {
+            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+        }
+    }
+
+    public function deleteTemplate($template = array())
+    {
+        $this->_action = 'DeleteTemplate';
+        $this->_method = 'POST';
+        $this->_refreshDate();
+
+		if (empty($template) || empty($template['TemplateName'])) {
+			throw new \Exception('Template Name Cannot Be Empty');
+            return;
+		}
+
+        $parameters = array();
+        if ($template) {
+			$parameters['TemplateName'] = $template['TemplateName'];
+        }
+        $this->_generateSignature($parameters);
+        $res = $this->_request();
+        if ($res['code'] == 200) {
+            return (string) $res['body']->ResponseMetadata->RequestId;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
