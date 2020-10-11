@@ -334,7 +334,6 @@ class SimpleEmailService
             if (isset($res['body']->SendRawEmailResult)) {
                 return (string) $res['body']->SendRawEmailResult->MessageId;
             }
-            
             return (string) $res['body']->SendEmailResult->MessageId;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);

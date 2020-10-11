@@ -165,5 +165,9 @@ EOT;
             $this->description = 'Template Already Exists.';
             break;			
         }
+        case 'DefaultTemplateData':
+            $this->description = 'DefaultTemplateData Cannot Be Empty';
+            break;			
+        }			
     }
 }
