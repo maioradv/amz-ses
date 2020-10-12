@@ -83,12 +83,14 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
+			$result['statusCode'] = $res['code'];
             $members = $res['body']->ListIdentitiesResult->Identities->member;
             $ret = [];
             foreach ($members as $member) {
                 $ret[] = (string) $member;
             }
-            return $ret;
+			$result['Identities'] = $ret;
+            return $result;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -115,7 +117,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-			return (string) $res['body']->ResponseMetadata->RequestId;
+			$result['statusCode'] = $res['code'];
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
+            return $result;			
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -142,7 +146,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-			return (string) $res['body']->ResponseMetadata->RequestId;
+			$result['statusCode'] = $res['code'];
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
+            return $result;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -166,7 +172,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-			return json_decode(json_encode($res['body']->GetTemplateResult->Template), true);
+			$result['statusCode'] = $res['code'];
+			$result['Template'] = json_decode(json_encode($res['body']->GetTemplateResult->Template), true);
+			return $result;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -190,7 +198,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-            return (string) $res['body']->ResponseMetadata->RequestId;
+			$result['statusCode'] = $res['code'];
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
+            return $result;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -221,7 +231,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-            return (string) $res['body']->ResponseMetadata->RequestId;
+			$result['statusCode'] = $res['code'];
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
+            return $result;			
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -253,7 +265,9 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
         if ($res['code'] == 200) {
-            return (string) $res['body']->ResponseMetadata->RequestId;
+			$result['statusCode'] = $res['code'];
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
+            return $result;			
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
         }
@@ -330,16 +344,23 @@ class SimpleEmailService
 
         $this->_generateSignature($parameters);
         $res = $this->_request();
-		return $res;
-        /*if ($res['code'] == 200) {
+		$result = array();
+        if ($res['code'] == 200) {
+			$result['statusCode'] = $res['code'];
             if (isset($res['body']->SendRawEmailResult)) {
-                return (string) $res['body']->SendRawEmailResult->MessageId;
+                $result['MessageId'] = (string) $res['body']->SendRawEmailResult->MessageId;
             }
-            
-            return (string) $res['body']->SendEmailResult->MessageId;
+            else if (isset($res['body']->SendBulkTemplatedEmailResult)) {
+				$status = json_decode(json_encode($res['body']->SendBulkTemplatedEmailResult->Status), true);
+				$result['List'] = $status['member'];
+            }
+            else {
+				$result['MessageId'] = (string) $res['body']->SendEmailResult->MessageId;
+			}
+			return $result;
         } else {
             return new SimpleEmailServiceError((string) $res['body']->Error->Code);
-        }*/
+        }
     }
 
 
@@ -363,6 +384,7 @@ class SimpleEmailService
         if ($res['code'] == 200) {
             $result = $res['body']->GetSendQuotaResult;
             return array(
+				'statusCode' => (string) $res['code'],
                 'MaxSendRate' => (string) $result->Max24HourSend,
                 'SentLast24Hours' => (string) $result->SentLast24Hours,
                 'MaxSendRate' => (string) $result->MaxSendRate
@@ -395,6 +417,7 @@ class SimpleEmailService
         if ($res['code'] == 200) {
             $result = $res['body']->GetSendStatisticsResult->SendDataPoints->member;
             return array(
+				'statusCode' => (string) $res['code'],
                 'Complaints' => (string) $result->Complaints,
                 'Rejects' => (string) $result->Rejects,
                 'Bounces' => (string) $result->Bounces,

@@ -87,6 +87,7 @@ EOT;
      */
     public function __construct($errorCode)
     {
+		$this->statusCode = 400;
         $this->code = $errorCode;
         switch ($errorCode) {
         case 'AccessDeniedException':
