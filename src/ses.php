@@ -82,18 +82,18 @@ class SimpleEmailService
 
         $this->_generateSignature($parameters);
         $res = $this->_request();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
             $members = $res['body']->ListIdentitiesResult->Identities->member;
             $ret = [];
             foreach ($members as $member) {
                 $ret[] = (string) $member;
             }
 			$result['Identities'] = $ret;
-            return $result;
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }
 	
     public function createTemplate($template = array())
@@ -116,13 +116,13 @@ class SimpleEmailService
         }
         $this->_generateSignature($parameters);
         $res = $this->_request();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
-			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
-            return $result;			
+			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;	
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }
 
     public function updateTemplate($template = array())
@@ -145,13 +145,13 @@ class SimpleEmailService
         }
         $this->_generateSignature($parameters);
         $res = $this->_request();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
 			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
-            return $result;
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }	
 
     public function getTemplate($template = array())
@@ -171,13 +171,13 @@ class SimpleEmailService
         }
         $this->_generateSignature($parameters);
         $res = $this->_request();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
 			$result['Template'] = json_decode(json_encode($res['body']->GetTemplateResult->Template), true);
-			return $result;
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }
 
     public function deleteTemplate($template = array())
@@ -197,13 +197,13 @@ class SimpleEmailService
         }
         $this->_generateSignature($parameters);
         $res = $this->_request();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
 			$result['RequestId'] = (string) $res['body']->ResponseMetadata->RequestId;
-            return $result;
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }	
 
     /**
@@ -345,8 +345,8 @@ class SimpleEmailService
         $this->_generateSignature($parameters);
         $res = $this->_request();
 		$result = array();
+		$result['statusCode'] = $res['code'];
         if ($res['code'] == 200) {
-			$result['statusCode'] = $res['code'];
             if (isset($res['body']->SendRawEmailResult)) {
                 $result['MessageId'] = (string) $res['body']->SendRawEmailResult->MessageId;
             }
@@ -356,11 +356,12 @@ class SimpleEmailService
             }
             else {
 				$result['MessageId'] = (string) $res['body']->SendEmailResult->MessageId;
-			}
-			return $result;
+			}	
         } else {
-            return new SimpleEmailServiceError((string) $res['body']->Error->Code);
+			$result['statusCode'] = $res['code'];
+			$result['Error'] = json_decode(json_encode($res['body']->Error), true);
         }
+		return $result;
     }
 
 
@@ -537,4 +538,3 @@ class SimpleEmailService
         );
     }
 }
-?>
