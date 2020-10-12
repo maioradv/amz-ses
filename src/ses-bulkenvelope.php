@@ -75,6 +75,12 @@ class BulkEmailServiceEnvelope
         if (empty($this->_destinations)) {
             return new SimpleEmailServiceError('Destination');
         }
+        if (empty($this->_source)) {
+            return new SimpleEmailServiceError('EmailSource');
+        }		
+        if (empty($this->_template)) {
+            return new SimpleEmailServiceError('NoTemplate');
+        }		
         if (empty($this->_DefaultTemplateData)) {
             return new SimpleEmailServiceError('DefaultTemplateData');
         }		

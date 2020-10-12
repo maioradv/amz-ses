@@ -163,11 +163,13 @@ EOT;
             break;
         case 'AlreadyExists':
             $this->description = 'Template Already Exists.';
-            break;			
-        }
+            break;
         case 'DefaultTemplateData':
             $this->description = 'DefaultTemplateData Cannot Be Empty';
-            break;			
-        }			
+            break;
+        case 'NoTemplate':
+            $this->description = 'Template Cannot Be Empty';
+            break;				
+        }		
     }
 }
