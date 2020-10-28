@@ -477,7 +477,7 @@ class SimpleEmailService
         $canonical_headers = '';
         $signed_headers = '';
         $qp = http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
-        if ($parameters['Action'] == "SendRawEmail" || $parameters['Action'] == "SendEmail" || $parameters['Action'] == "SendBulkTemplatedEmail" || $parameters['Action'] == "CreateTemplate") {
+        if ($parameters['Action'] == "SendRawEmail" || $parameters['Action'] == "SendEmail" || $parameters['Action'] == "SendBulkTemplatedEmail" || $parameters['Action'] == "CreateTemplate" || $parameters['Action'] == "UpdateTemplate") {
             $this->_body = $qp;
             $canonical_headers .= 'content-type:' . 'application/x-www-form-urlencoded' . "\n";
             $signed_headers .= 'content-type;';
